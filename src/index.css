@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-forest-50: #eff8f3;
+  --color-forest-100: #d8eee1;
+  --color-forest-200: #b3ddc7;
+  --color-forest-300: #82c4a5;
+  --color-forest-400: #4ea57f;
+  --color-forest-500: #2f8a64;
+  --color-forest-600: #1f6e4f;
+  --color-forest-700: #195841;
+  --color-forest-800: #164636;
+  --color-forest-900: #123a2d;
+  --color-forest-950: #08201a;
+
+  --color-ink-50: #f6f8f7;
+  --color-ink-100: #e8edeb;
+  --color-ink-200: #d2dbd7;
+  --color-ink-300: #adbcb6;
+  --color-ink-400: #7f968e;
+  --color-ink-500: #5f7a70;
+  --color-ink-600: #4a6159;
+  --color-ink-700: #3b4d47;
+  --color-ink-800: #26332e;
+  --color-ink-900: #16211d;
+  --color-ink-950: #0b1210;
+
+  --color-clay-50: #fdf6ec;
+  --color-clay-100: #f9e8cd;
+  --color-clay-200: #f2cf95;
+  --color-clay-300: #eab15d;
+  --color-clay-400: #e39434;
+  --color-clay-500: #d97a1c;
+  --color-clay-600: #c05f15;
+  --color-clay-700: #9f4515;
+  --color-clay-800: #813818;
+  --color-clay-900: #6a2f16;
+
+  --color-brick-50: #fdf2f2;
+  --color-brick-100: #fbe3e3;
+  --color-brick-200: #f7c9ca;
+  --color-brick-300: #efa3a5;
+  --color-brick-400: #e57074;
+  --color-brick-500: #d6434a;
+  --color-brick-600: #c02c3a;
+  --color-brick-700: #a12131;
+  --color-brick-800: #861f2e;
+  --color-brick-900: #701e2b;
+
+  --color-lagoon-50: #eef7fb;
+  --color-lagoon-100: #d7edf6;
+  --color-lagoon-200: #b3dcee;
+  --color-lagoon-300: #7fc2e0;
+  --color-lagoon-400: #44a0cd;
+  --color-lagoon-500: #2484b4;
+  --color-lagoon-600: #1d6a98;
+  --color-lagoon-700: #1c557b;
+  --color-lagoon-800: #1d4766;
+  --color-lagoon-900: #1d3c56;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: #f2f5f3;
+  color: #16211d;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #b3ddc7;
+  color: #08201a;
+}
+
+/* Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #adbcb6 transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #c3cfca;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #9db0a8;
+}
+
+/* Textura sutil do sidebar */
+.sidebar-texture {
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(78, 165, 127, 0.16), transparent 42%),
+    radial-gradient(circle at 82% 88%, rgba(36, 132, 180, 0.13), transparent 46%);
+}
+
+.grid-paper {
+  background-image:
+    linear-gradient(rgba(22, 33, 29, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 33, 29, 0.035) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #e4eae7;
+}
+.skeleton::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.4s infinite;
+  content: "";
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(214, 67, 74, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(214, 67, 74, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(214, 67, 74, 0);
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+/* Recharts ajustes */
+.recharts-default-tooltip {
+  border-radius: 10px !important;
+}
+.recharts-cartesian-axis-tick text {
+  font-size: 11px;
+  fill: #5f7a70;
+}
+
+/* Impressão de relatórios */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .print-full {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+}
