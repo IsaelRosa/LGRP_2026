@@ -93,6 +93,36 @@ O servidor Express serve o frontend construído e as APIs na porta definida por 
 
 Verifique a API e a conexão ao banco em `https://SEU_DOMINIO/api/health`. Uma resposta `{ "ok": true }` indica que a aplicação alcançou o MySQL.
 
+### Hostinger com importação GitHub
+
+Para o formulário de implantação de aplicativo Node.js da Hostinger, use:
+
+- Predefinição: Express.
+- Repositório: `IsaelRosa/LGRP_2026`.
+- Branch: `main`.
+- Versão do Node: `20.x`.
+- Diretório raiz: `./`.
+- Comando de compilação: `npm run build`.
+- Comando de inicialização: `npm start`.
+- Diretório público/saída: não definir; o Express serve `dist` e também as rotas `/api`.
+
+O servidor usa a variável `PORT` fornecida pela plataforma e escuta em `0.0.0.0` para aceitar o tráfego do proxy Hostinger. Não fixe uma porta diferente da variável `PORT`.
+
+O arquivo `.env.example` documenta 24 nomes, mas **não são 24 valores de produção obrigatórios**. Configure no painel da Hostinger as seis chaves essenciais para iniciar e conectar o sistema:
+
+- `NODE_ENV=production`
+- `APP_ORIGIN=https://springgreen-magpie-310253.hostingersite.com`
+- `JWT_SECRET`: segredo aleatório privado com ao menos 32 caracteres.
+- `MYSQL_HOST`: host MySQL mostrado no painel Hostinger.
+- `MYSQL_PORT=3306`, salvo se o painel informar outra porta.
+- `MYSQL_DATABASE`, `MYSQL_USER` e `MYSQL_PASSWORD`: credenciais do banco criadas no painel.
+
+`PORT` é fornecida pela plataforma; não use `3000` se a Hostinger fornecer outra porta. `MYSQL_CONNECTION_LIMIT` pode ficar ausente (padrão 10).
+
+As variáveis `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` e `SMTP_FROM` são necessárias para enviar convites e links de senha. As três variáveis Google (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`) são necessárias somente se o botão de login Google for usado; o callback deve ser `https://springgreen-magpie-310253.hostingersite.com/api/auth/google/callback` e também deve estar cadastrado no Google Cloud.
+
+Não configure `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` como variáveis permanentes do site: elas são usadas uma única vez no terminal para criar o primeiro administrador. `SOURCE_SUPABASE_URL` e `SOURCE_SUPABASE_SERVICE_ROLE_KEY` também são apenas para uma importação temporária, se ainda for migrar dados do Supabase. Não copie valores de exemplo como se fossem credenciais reais.
+
 ## Desenvolvimento local
 
 Copie `.env.example` para `.env` e preencha uma base MySQL local. Depois rode:
