@@ -29,7 +29,6 @@ import {
   CLASSES,
   EMBALAGENS,
   GRUPOS,
-  LABORATORIOS,
   PRIORIDADES,
   PRIORIDADE_TONE,
   RISCOS,
@@ -41,6 +40,7 @@ import {
   LOCAIS_ARMAZENAMENTO,
 } from '../lib/constants';
 import { useAuth } from '../contexts/AuthContext';
+import { useLaboratorios } from '../lib/catalogo-hooks';
 import { useToast } from '../contexts/ToastContext';
 import {
   Badge,
@@ -92,6 +92,7 @@ const VAZIO_COLETA = {
 
 export default function Pedidos() {
   const { podeEditar } = useAuth();
+  const { nomes: laboratorios } = useLaboratorios();
   const { toast } = useToast();
   const [params, setParams] = useSearchParams();
 
@@ -515,7 +516,7 @@ export default function Pedidos() {
             <Field label="Laboratório">
               <Select value={fLab} onChange={(e) => setFLab(e.target.value)}>
                 <option value="todos">Todos</option>
-                {LABORATORIOS.map((s) => (
+                {laboratorios.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -600,7 +601,7 @@ export default function Pedidos() {
               onChange={(e) => setForm({ ...form, laboratorio: e.target.value })}
             >
               <option value="">Selecione...</option>
-              {LABORATORIOS.map((l) => (
+              {laboratorios.map((l) => (
                 <option key={l} value={l}>
                   {l}
                 </option>

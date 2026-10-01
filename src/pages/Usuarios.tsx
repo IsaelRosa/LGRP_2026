@@ -2,7 +2,8 @@ import { ShieldCheck, Users } from 'lucide-react';
 import CrudModule, { type FiltroDef } from '../components/CrudModule';
 import type { FieldDef } from '../components/DynamicForm';
 import { Badge, type Column } from '../components/ui';
-import { LABORATORIOS, PAPEIS, PAPEL_TONE } from '../lib/constants';
+import { PAPEIS, PAPEL_TONE } from '../lib/constants';
+import { useNomesLaboratorios } from '../lib/catalogo-hooks';
 import { fmtData } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -10,7 +11,7 @@ const CAMPOS: FieldDef[] = [
   { name: 'nome', label: 'Nome completo', type: 'text', required: true, span: 2, placeholder: 'Ex.: Dra. Helena Vasconcelos Prado' },
   { name: 'email', label: 'E-mail institucional', type: 'text', required: true, placeholder: 'nome@universidade.br' },
   { name: 'papel', label: 'Papel / perfil de acesso', type: 'select', options: PAPEIS, required: true },
-  { name: 'setor', label: 'Setor / lotação', type: 'select', options: LABORATORIOS },
+  { name: 'setor', label: 'Setor / lotação', type: 'select', options: [] },
   { name: 'crq', label: 'Registro profissional (CRQ)', type: 'text', placeholder: 'Ex.: CRQ-IV 04352891' },
   { name: 'telefone', label: 'Telefone / ramal', type: 'text', placeholder: '(00) 00000-0000' },
   { name: 'ativo', label: 'Usuário ativo', type: 'boolean', hint: 'Usuários inativos não podem operar o sistema' },
@@ -18,7 +19,7 @@ const CAMPOS: FieldDef[] = [
 
 const FILTROS: FiltroDef[] = [
   { name: 'papel', label: 'Papel', type: 'select', options: PAPEIS, api: 'papel' },
-  { name: 'setor', label: 'Setor', type: 'select', options: LABORATORIOS, api: 'setor' },
+  { name: 'setor', label: 'Setor', type: 'select', options: [], api: 'setor' },
 ];
 
 const DESCRICAO_PAPEL: Record<string, string> = {
@@ -31,6 +32,15 @@ const DESCRICAO_PAPEL: Record<string, string> = {
 
 export default function Usuarios() {
   const { podeGerenciarUsuarios, perfil } = useAuth();
+  const laboratorios = useNomesLaboratorios();
+
+  // opcoes de laboratorio/setor vem do catalogo editavel (/api/laboratorio)
+  const campos = CAMPOS.map((c) =>
+    c.name === 'setor' ? { ...c, options: laboratorios } : c
+  );
+  const filtros = FILTROS.map((f) =>
+    f.name === 'setor' ? { ...f, options: laboratorios } : f
+  );
 
   const colunas: Column<any>[] = [
     {
@@ -94,9 +104,9 @@ export default function Usuarios() {
       rotuloRegistro="Usuário"
       csvNome="lgrp-usuarios"
       podeEditar={podeGerenciarUsuarios}
-      campos={CAMPOS}
+      campos={campos}
       colunas={colunas}
-      filtros={FILTROS}
+      filtros={filtros}
       buscaCampos={['nome', 'email', 'setor', 'papel', 'crq']}
       valoresIniciais={{ papel: 'Técnico de Laboratório', ativo: true }}
       mostrarDetalhe={false}

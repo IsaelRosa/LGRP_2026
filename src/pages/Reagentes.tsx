@@ -5,7 +5,6 @@ import { Badge, type Column } from '../components/ui';
 import {
   CLASSES_RISCO,
   FABRICANTES,
-  LABORATORIOS,
   LOCAIS_ARMAZENAMENTO,
   RISCO_TONE,
   SITUACAO_TONE,
@@ -14,6 +13,7 @@ import {
 } from '../lib/constants';
 import { fmtData, fmtNum, hojeISO } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
+import { useNomesLaboratorios } from '../lib/catalogo-hooks';
 
 const UNIDADES_REAGENTE = ['g', 'kg', 'mg', 'mL', 'L', 'un'];
 
@@ -26,7 +26,7 @@ const CAMPOS: FieldDef[] = [
   { name: 'lote', label: 'Lote', type: 'text', placeholder: 'Ex.: SLBV4821' },
   { name: 'quantidade', label: 'Quantidade', type: 'number', step: '0.01', required: true },
   { name: 'unidade', label: 'Unidade', type: 'select', options: UNIDADES_REAGENTE },
-  { name: 'laboratorio', label: 'Laboratório / setor', type: 'select', options: LABORATORIOS, required: true },
+  { name: 'laboratorio', label: 'Laboratório / setor', type: 'select', options: [], required: true },
   { name: 'localizacao', label: 'Local de armazenamento', type: 'select', options: LOCAIS_ARMAZENAMENTO },
   { name: 'data_aquisicao', label: 'Data de aquisição', type: 'date', required: true },
   { name: 'data_validade', label: 'Data de validade', type: 'date', required: true },
@@ -37,13 +37,22 @@ const CAMPOS: FieldDef[] = [
 const FILTROS: FiltroDef[] = [
   { name: 'situacao_validade', label: 'Situação da validade', type: 'select', options: ['Vencido', 'A vencer', 'Atenção', 'Válido', 'Sem validade'] },
   { name: 'classe_risco', label: 'Classe de risco', type: 'select', options: CLASSES_RISCO, api: 'classe_risco' },
-  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: LABORATORIOS, api: 'laboratorio' },
+  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: [], api: 'laboratorio' },
   { name: 'status', label: 'Status', type: 'select', options: STATUS_REAGENTE, api: 'status' },
   { name: 'de', label: 'Adquirido a partir de', type: 'date', api: 'de' },
 ];
 
 export default function Reagentes() {
   const { podeEditar } = useAuth();
+  const laboratorios = useNomesLaboratorios();
+
+  // opções de laboratório vêm do catálogo editável (/api/laboratorio)
+  const campos = CAMPOS.map((c) =>
+    c.name === 'laboratorio' ? { ...c, options: laboratorios } : c
+  );
+  const filtros = FILTROS.map((f) =>
+    f.name === 'laboratorio' ? { ...f, options: laboratorios } : f
+  );
 
   const colunas: Column<any>[] = [
     {
@@ -141,9 +150,9 @@ export default function Reagentes() {
       rotuloRegistro="Reagente"
       csvNome="lgrp-banco-reagentes"
       podeEditar={podeEditar}
-      campos={CAMPOS}
+      campos={campos}
       colunas={colunas}
-      filtros={FILTROS}
+      filtros={filtros}
       buscaCampos={['codigo', 'nome', 'formula', 'cas', 'lote', 'fabricante', 'laboratorio', 'localizacao']}
       camposData={['data_aquisicao', 'data_validade']}
       camposNumericos={['quantidade']}

@@ -4,7 +4,6 @@ import type { FieldDef } from '../components/DynamicForm';
 import { Badge, type Column } from '../components/ui';
 import {
   CLASSES,
-  LABORATORIOS,
   METODOS_DESCONTAMINACAO,
   NIVEIS_CONTAMINACAO,
   NIVEL_TONE,
@@ -14,11 +13,12 @@ import {
 } from '../lib/constants';
 import { fmtData, fmtInt, hojeISO } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
+import { useNomesLaboratorios } from '../lib/catalogo-hooks';
 
 const CAMPOS: FieldDef[] = [
   { name: 'tipo', label: 'Tipo de vidraria', type: 'select', options: TIPOS_VIDRARIA, required: true },
   { name: 'quantidade', label: 'Quantidade de peças', type: 'number', required: true, step: '1' },
-  { name: 'laboratorio', label: 'Laboratório de origem', type: 'select', options: LABORATORIOS, required: true },
+  { name: 'laboratorio', label: 'Laboratório de origem', type: 'select', options: [], required: true },
   { name: 'contaminante', label: 'Contaminante principal', type: 'text', required: true, placeholder: 'Ex.: Cromo hexavalente, fenol, prata' },
   { name: 'classe_contaminante', label: 'Classe do contaminante', type: 'select', options: CLASSES },
   { name: 'nivel_contaminacao', label: 'Nível de contaminação', type: 'select', options: NIVEIS_CONTAMINACAO, required: true },
@@ -34,13 +34,22 @@ const CAMPOS: FieldDef[] = [
 const FILTROS: FiltroDef[] = [
   { name: 'status', label: 'Status', type: 'select', options: STATUS_VIDRARIA, api: 'status' },
   { name: 'nivel_contaminacao', label: 'Nível', type: 'select', options: NIVEIS_CONTAMINACAO, api: 'nivel_contaminacao' },
-  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: LABORATORIOS, api: 'laboratorio' },
+  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: [], api: 'laboratorio' },
   { name: 'tipo', label: 'Tipo de vidraria', type: 'select', options: TIPOS_VIDRARIA, api: 'tipo' },
   { name: 'de', label: 'Registrado a partir de', type: 'date', api: 'de' },
 ];
 
 export default function Vidrarias() {
   const { podeEditar } = useAuth();
+  const laboratorios = useNomesLaboratorios();
+
+  // opcoes de laboratorio/setor vem do catalogo editavel (/api/laboratorio)
+  const campos = CAMPOS.map((c) =>
+    c.name === 'laboratorio' ? { ...c, options: laboratorios } : c
+  );
+  const filtros = FILTROS.map((f) =>
+    f.name === 'laboratorio' ? { ...f, options: laboratorios } : f
+  );
 
   const colunas: Column<any>[] = [
     {
@@ -121,9 +130,9 @@ export default function Vidrarias() {
       rotuloRegistro="Vidraria"
       csvNome="lgrp-vidrarias"
       podeEditar={podeEditar}
-      campos={CAMPOS}
+      campos={campos}
       colunas={colunas}
-      filtros={FILTROS}
+      filtros={filtros}
       buscaCampos={['codigo', 'tipo', 'laboratorio', 'contaminante', 'responsavel', 'destino']}
       camposData={['data_registro', 'data_descontaminacao']}
       camposNumericos={['quantidade']}

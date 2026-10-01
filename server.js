@@ -9,6 +9,7 @@ import { one } from './api/db.js';
 import coletas from './api/coletas.js';
 import dashboard from './api/dashboard.js';
 import historico from './api/historico.js';
+import laboratorio from './api/laboratorio.js';
 import indicadores from './api/indicadores.js';
 import notificacoes from './api/notificacoes.js';
 import pedidos from './api/pedidos.js';
@@ -26,6 +27,7 @@ const routes = {
   coletas,
   dashboard,
   historico,
+  laboratorio,
   indicadores,
   notificacoes,
   pedidos,
@@ -58,6 +60,13 @@ app.use('/api', (req, res, next) => {
     if (error) return next(error);
     if (req.path === '/usuarios' && req.authUser.papel !== 'Administrador') {
       return res.status(403).json({ error: 'Somente administradores podem gerenciar usuários.' });
+    }
+    if (
+      req.path === '/laboratorio' &&
+      ['POST', 'PUT', 'DELETE'].includes(req.method) &&
+      req.authUser.papel !== 'Administrador'
+    ) {
+      return res.status(403).json({ error: 'Somente administradores podem gerenciar o catálogo de laboratórios.' });
     }
     if (['POST', 'PUT', 'DELETE'].includes(req.method) && req.authUser.papel === 'Consultor') {
       return res.status(403).json({ error: 'Seu perfil permite somente leitura.' });

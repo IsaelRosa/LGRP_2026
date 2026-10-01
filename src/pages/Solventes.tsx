@@ -5,7 +5,6 @@ import { Badge, ProgressBar, type Column } from '../components/ui';
 import {
   CATEGORIAS_SOLVENTE,
   EMBALAGENS,
-  LABORATORIOS,
   LOCAIS_ARMAZENAMENTO,
   SITUACAO_TONE,
   STATUS_SOLVENTE,
@@ -13,6 +12,7 @@ import {
 } from '../lib/constants';
 import { fmtData, fmtNum, hojeISO } from '../lib/utils';
 import { useAuth } from '../contexts/AuthContext';
+import { useNomesLaboratorios } from '../lib/catalogo-hooks';
 
 const CAMPOS: FieldDef[] = [
   { name: 'nome', label: 'Nome do solvente', type: 'text', required: true, placeholder: 'Ex.: Acetona P.A.' },
@@ -25,7 +25,7 @@ const CAMPOS: FieldDef[] = [
   { name: 'volume_restante_l', label: 'Volume restante (L)', type: 'number', step: '0.01' },
   { name: 'volume_recuperado_l', label: 'Volume recuperado por destilação (L)', type: 'number', step: '0.01' },
   { name: 'embalagem', label: 'Embalagem', type: 'select', options: EMBALAGENS },
-  { name: 'laboratorio', label: 'Laboratório / setor', type: 'select', options: LABORATORIOS, required: true },
+  { name: 'laboratorio', label: 'Laboratório / setor', type: 'select', options: [], required: true },
   { name: 'localizacao', label: 'Local de armazenamento', type: 'select', options: LOCAIS_ARMAZENAMENTO },
   { name: 'data_recebimento', label: 'Data de recebimento', type: 'date', required: true },
   { name: 'data_validade', label: 'Data de validade', type: 'date' },
@@ -37,13 +37,22 @@ const CAMPOS: FieldDef[] = [
 const FILTROS: FiltroDef[] = [
   { name: 'categoria', label: 'Categoria', type: 'select', options: CATEGORIAS_SOLVENTE, api: 'categoria' },
   { name: 'status', label: 'Status', type: 'select', options: STATUS_SOLVENTE, api: 'status' },
-  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: LABORATORIOS, api: 'laboratorio' },
+  { name: 'laboratorio', label: 'Laboratório', type: 'select', options: [], api: 'laboratorio' },
   { name: 'de', label: 'Recebido a partir de', type: 'date', api: 'de' },
   { name: 'ate', label: 'Recebido até', type: 'date', api: 'ate' },
 ];
 
 export default function Solventes() {
   const { podeEditar } = useAuth();
+  const laboratorios = useNomesLaboratorios();
+
+  // opcoes de laboratorio/setor vem do catalogo editavel (/api/laboratorio)
+  const campos = CAMPOS.map((c) =>
+    c.name === 'laboratorio' ? { ...c, options: laboratorios } : c
+  );
+  const filtros = FILTROS.map((f) =>
+    f.name === 'laboratorio' ? { ...f, options: laboratorios } : f
+  );
 
   const colunas: Column<any>[] = [
     {
@@ -137,9 +146,9 @@ export default function Solventes() {
       rotuloRegistro="Solvente"
       csvNome="lgrp-solventes"
       podeEditar={podeEditar}
-      campos={CAMPOS}
+      campos={campos}
       colunas={colunas}
-      filtros={FILTROS}
+      filtros={filtros}
       buscaCampos={['codigo', 'nome', 'formula', 'cas', 'laboratorio', 'localizacao', 'responsavel']}
       camposData={['data_recebimento', 'data_validade']}
       camposNumericos={['pureza', 'volume_total_l', 'volume_restante_l', 'volume_recuperado_l']}

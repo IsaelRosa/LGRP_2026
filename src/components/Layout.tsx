@@ -7,6 +7,7 @@ import {
   BarChart3,
   Bell,
   Beaker,
+  Building2,
   CheckCheck,
   ChevronDown,
   ClipboardList,
@@ -110,6 +111,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           badge: naoLidas,
         },
         { to: '/usuarios', label: 'Usuários', icone: <Users className="h-4.5 w-4.5" /> },
+        { to: '/laboratorios', label: 'Laboratórios', icone: <Building2 className="h-4.5 w-4.5" /> },
       ],
     },
   ];
@@ -526,6 +528,7 @@ const MODULOS_BUSCA = [
   { to: '/rastreabilidade', label: 'Rastreabilidade', desc: 'Trilha de auditoria completa', icone: <Activity className="h-4 w-4" />, palavras: 'rastreabilidade auditoria historico log' },
   { to: '/notificacoes', label: 'Notificações', desc: 'Central de alertas', icone: <Bell className="h-4 w-4" />, palavras: 'notificacao alerta aviso' },
   { to: '/usuarios', label: 'Usuários', desc: 'Perfis e permissões', icone: <Users className="h-4 w-4" />, palavras: 'usuario perfil permissao papel' },
+  { to: '/laboratorios', label: 'Laboratórios', desc: 'Catálogo de setores geradores', icone: <Building2 className="h-4 w-4" />, palavras: 'laboratorio setor catalogo unidade' },
 ];
 
 function filtrarBusca(termo: string) {

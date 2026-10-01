@@ -13,12 +13,16 @@ import Relatorios from './pages/Relatorios';
 import Rastreabilidade from './pages/Rastreabilidade';
 import Notificacoes from './pages/Notificacoes';
 import Usuarios from './pages/Usuarios';
+import Laboratorios from './pages/Laboratorios';
 import RedefinirSenha from './pages/RedefinirSenha';
+import { CatalogoProvider } from './lib/laboratorios';
 
 function Rota({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
-      <Layout>{children}</Layout>
+      <CatalogoProvider>
+        <Layout>{children}</Layout>
+      </CatalogoProvider>
     </ProtectedRoute>
   );
 }
@@ -40,6 +44,7 @@ export default function App() {
         <Route path="/rastreabilidade" element={<Rota><Rastreabilidade /></Rota>} />
         <Route path="/notificacoes" element={<Rota><Notificacoes /></Rota>} />
         <Route path="/usuarios" element={<Rota><Usuarios /></Rota>} />
+        <Route path="/laboratorios" element={<Rota><Laboratorios /></Rota>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
