@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "start": "node server.js",
     "admin:create": "node scripts/create-admin.mjs",
+    "admin:sql": "node scripts/gerar-sql-admin.mjs",
     "db:migrate-supabase": "node scripts/migrate-supabase-to-mysql.mjs",
     "test": "node --test"
   },
